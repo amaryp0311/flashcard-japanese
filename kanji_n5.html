@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanji N5</title>
+    <link rel="stylesheet" href="game.css">
+</head>
+<body>
+    <div id="score-board">
+        <span id="score">Score: 0</span>
+        <span id="wrong">Wrong: 0</span>
+    </div>
+    <div id="question"></div>
+    <div id="answer"></div>
+    <div id="result"></div>
+
+    <script>
+        // Data
+        const hiraganaData = [
+        {"question": "アイスクリーム", "correct": "ไอศกรีม"},
+        {"question": "間", "correct": "ระหว่าง"},
+    {"question": "会います", "correct": "พบ, เจอ"},
+    {"question": "青", "correct": "สีฟ้า"},
+    {"question": "青い", "correct": "(สี) ฟ้า"},
+    {"question": "赤", "correct": "สีแดง"},
+    {"question": "赤い", "correct": "(สี) แดง"},
+    {"question": "（性格が）明るい", "correct": "(นิสัย) ร่าเริง, สดใส"},
+    {"question": "開けます", "correct": "เปิด..."},
+    {"question": "あげます", "correct": "ให้"},
+    {"question": "朝", "correct": "ตอนเช้า"},
+    {"question": "あさって", "correct": "มะรืน"},
+    {"question": "足", "correct": "เท้า, ขา"},
+    {"question": "明日", "correct": "พรุ่งนี้"},
+    {"question": "あそこ", "correct": "ตรงโน้น"},
+    {"question": "あそびます", "correct": "เที่ยว, เล่น"},
+    {"question": "あたたかい", "correct": "อบอุ่น"},
+    {"question": "新 しい", "correct": "ใหม่"},
+    {"question": "あちら", "correct": "ทางโน้น, ตรงโน้น"},
+    {"question": "暑い", "correct": "(อากาศ) ร้อน"},
+    {"question": "あっち：「あちら」のカジュアルな言い方", "correct": "ทางโน้น, ตรงโน้น (รูปกันเองของ あちら)"},
+    {"question": "あと～", "correct": "หลังจาก"},
+    {"question": "兄：自分の兄のことを言うとき", "correct": "พี่ชาย (ของตน)"},
+    {"question": "姉：自分の姉のことを言うとき", "correct": "พี่สาว (ของตน)"},
+    {"question": "あの", "correct": "โน่น, โน้น (สรรพนามชี้ตำแหน่ง : ไกลจากทั้งผู้พูดและผู้ฟัง)"},
+    {"question": "（シャワーを）あびます", "correct": "อาบน้ำ (ฝักบัว)"},
+    {"question": "あぶない", "correct": "อันตราย"},
+    {"question": "あまり～ない", "correct": "ไม่ค่อย"},
+    {"question": "雨", "correct": "ฝน"},
+    {"question": "アメリカ人", "correct": "ชาวอเมริกัน"},
+    {"question": "洗います", "correct": "ซัก, ล้าง"},
+    {"question": "あります", "correct": "มี, อยู่ (สิ่งไม่มีชีวิต)"},
+    {"question": "歩いてきます", "correct": "เดินมา"},
+    {"question": "歩きます", "correct": "เดิน"},
+    {"question": "アルバイト", "correct": "งานพาร์ตไทม์, งานพิเศษ"},
+    {"question": "あれ", "correct": "ที่โน่น, ตรงโน้น (สรรพนาม : ไกลจากทั้งผู้พูดและผู้ฟัง)"},
+    {"question": "いい", "correct": "ดี"},
+    {"question": "いいえ", "correct": "ไม่ใช่, เปล่า"},
+    {"question": "言います", "correct": "พูด, บอก"},
+    {"question": "家", "correct": "บ้าน"},
+    {"question": "いかが：「どう」のていねいな言い方", "correct": "อย่างไร (รูปสุภาพของ どう)"},
+    {"question": "行きます", "correct": "ไป"},
+    {"question": "いくつ", "correct": "(อายุ) เท่าไร, (จำนวน) เท่าไร"},
+    {"question": "いくら", "correct": "(ราคา) เท่าไร"},
+    {"question": "医者", "correct": "แพทย์, หมอ"},
+    {"question": "いす", "correct": "เก้าอี้"},
+    {"question": "いそがしい", "correct": "ยุ่ง"},
+    {"question": "急ぎます", "correct": "รีบ"},
+    {"question": "いたい", "correct": "เจ็บ, ปวด"},
+    {"question": "イタリア", "correct": "ประเทศอิตาลี"},
+    {"question": "いちばん", "correct": "ที่สุด"},
+    {"question": "いつ", "correct": "เมื่อไร"},
+    {"question": "いっしょに", "correct": "ด้วยกัน"},
+    {"question": "いつも", "correct": "เสมอ ๆ"},
+    {"question": "犬", "correct": "สุนัข"},
+    {"question": "今", "correct": "ตอนนี้"},
+    {"question": "今から", "correct": "หลังจากนี้"},
+    {"question": "います", "correct": "มี, อยู่ (สิ่งมีชีวิต)"},
+    {"question": "妹 ：自分の 妹 のことを言うとき", "correct": "น้องสาว (ของตน)"},
+    {"question": "妹 さん：ほかの人の 妹 のことを言うとき", "correct": "น้องสาว (ของผู้อื่น)"},
+    {"question": "入り口", "correct": "ทางเข้า"},
+    {"question": "いります", "correct": "ต้องการ"},
+    {"question": "入れます", "correct": "ใส่, บรรจุ"},
+    {"question": "いろいろ", "correct": "ต่าง ๆ นานา"},
+    {"question": "インターネット", "correct": "อินเทอร์เน็ต"},
+    {"question": "インターネット（を）します", "correct": "เล่นอินเทอร์เน็ต"},
+    {"question": "上", "correct": "บน, ข้างบน"},
+    {"question": "うしろ", "correct": "ข้างหลัง"},
+    {"question": "歌", "correct": "เพลง"},
+    {"question": "歌います", "correct": "ร้องเพลง"},
+    {"question": "うち", "correct": "บ้าน"},
+    {"question": "生まれます", "correct": "เกิด, สร้างขึ้น"},
+    {"question": "海", "correct": "ทะเล, มหาสมุทร"},
+    {"question": "うら", "correct": "ด้านหลัง"},
+    {"question": "売ります", "correct": "ขาย"},
+    {"question": "うるさい", "correct": "เสียงดัง, หนวกหู"},
+    {"question": "うれしい", "correct": "ดีใจ, ยินดี"},
+    {"question": "うん：「はい」のカジュアルな言い方", "correct": "อือ (รูปกันเองของ はい)"},
+    {"question": "え", "correct": "รูปวาด"},
+    {"question": "映画", "correct": "ภาพยนตร์"},
+    {"question": "映画館", "correct": "โรงภาพยนตร์"},
+    {"question": "英語", "correct": "ภาษาอังกฤษ"},
+    {"question": "ええ（＝はい）", "correct": "ค่ะ/ครับ"},
+    {"question": "駅", "correct": "สถานีรถไฟ"},
+    {"question": "駅前", "correct": "หน้าสถานีรถไฟ"},
+    {"question": "えんぴつ", "correct": "ดินสอ"},
+    {"question": "おいしい", "correct": "อร่อย"},
+    {"question": "多い", "correct": "เยอะ, มาก"},
+    {"question": "大きい", "correct": "ใหญ่"},
+    {"question": "おおぜい", "correct": "(คน) เยอะ, จำนวนมาก"},
+    {"question": "お母さん：ほかの人の母親のことを言うとき", "correct": "คุณแม่ (ของผู้อื่น)"},
+    {"question": "おかし", "correct": "ขนม"},
+    {"question": "お金", "correct": "เงิน"},
+    {"question": "起きます", "correct": "ตื่น"},
+    {"question": "（物を）おきます", "correct": "วาง (สิ่งของ)"},
+    {"question": "お客さん：「 客 」のていねいな言い方", "correct": "แขก, ลูกค้า (รูปสุภาพของ 客 )"},
+    {"question": "奥さん：ほかの人の妻のことを言うとき", "correct": "ภรรยา (ของผู้อื่น)"},
+    {"question": "お薬 ：「 薬 」のていねいな言い方", "correct": "ยา (รูปสุภาพของ 薬 )"},
+    {"question": "送ります", "correct": "ส่ง"},
+    {"question": "お酒", "correct": "เหล้า"},
+    {"question": "おじいさん", "correct": "คุณปู่, คุณตา (ของผู้อื่น), คุณลุง (เรียกผู้ชายที่อายุมาก)"},
+    {"question": "お時間：「時間」のていねいな言い方", "correct": "เวลา (รูปสุภาพของ 時間)"},
+    {"question": "お好きなもの：「好きなもの」のていねいな言い方", "correct": "ของที่ชอบ (รูปสุภาพของ 好きなもの)"},
+    {"question": "おそい", "correct": "ช้า, สาย, ดึก"},
+    {"question": "おそくまで", "correct": "จนดึก"},
+    {"question": "お茶", "correct": "น้ำชา"},
+    {"question": "夫", "correct": "สามี"},
+    {"question": "おてら", "correct": "วัด"},
+    {"question": "お父さん：ほかの人の父親のことを言うとき", "correct": "คุณพ่อ (ของผู้อื่น)"},
+    {"question": "弟 ：自分の 弟 のことを言うとき", "correct": "น้องชาย (ของตน)"},
+    {"question": "弟 さん：ほかの人の 弟 のことを言うとき", "correct": "น้องชาย (ของผู้อื่น)"},
+    {"question": "男 の子", "correct": "เด็กผู้ชาย"},
+    {"question": "男 の人", "correct": "(คน) ผู้ชาย"},
+    {"question": "おととい", "correct": "เมื่อวานซืน"},
+    {"question": "おなか", "correct": "ท้อง"},
+    {"question": "お兄さん：ほかの人の兄のことを言うとき", "correct": "พี่ชาย (ของผู้อื่น)"},
+    {"question": "お姉さん：ほかの人の姉のことを言うとき", "correct": "พี่สาว (ของผู้อื่น)"},
+    {"question": "おばあさん①：ほかの人のおばあさんのことを言うとき", "correct": "คุณย่า, คุณยาย (ของผู้อื่น)"},
+    {"question": "おばあさん②：年よりの 女 の人のことを言うとき", "correct": "คุณป้า (เรียกผู้หญิงที่อายุมาก)"},
+    {"question": "おふろ", "correct": "อ่างอาบน้ำ"},
+    {"question": "お弁当", "correct": "ข้าวกล่อง (รูปสุภาพของ 弁当)"},
+    {"question": "おぼえます", "correct": "จำ, จำได้"},
+    {"question": "おみやげ", "correct": "ของฝาก"},
+    {"question": "重い", "correct": "หนัก"},
+    {"question": "学生", "correct": "นักเรียน"},
+    {"question": "（電話を) かけます", "correct": "หมุน (โทรศัพท์)"},
+    {"question": "かさ", "correct": "ร่ม"},
+    {"question": "かします", "correct": "ให้ยืม"},
+    {"question": "家族", "correct": "ครอบครัว"},
+    {"question": "方：「人」のていねいな言い方", "correct": "คน (รูปสุภาพของ 人)"},
+    {"question": "～方：「～たち」のていねいな言い方", "correct": "พวก..., เหล่า... (รูปสุภาพของ ～たち)"},
+    {"question": "形", "correct": "รูปร่าง"},
+    {"question": "学校", "correct": "โรงเรียน"},
+    {"question": "買ってきます", "correct": "ซื้อมา"},
+    {"question": "かばん", "correct": "กระเป๋า"},
+    {"question": "（ぼうしを）かぶります", "correct": "ใส่, สวม (ของประดับศีรษะ เช่น หมวก หมวกกันน็อก)"},
+    {"question": "紙", "correct": "กระดาษ"},
+    {"question": "紙しばい", "correct": "การเล่านิทานประกอบภาพ"},
+    {"question": "カメラ", "correct": "กล้อง"},
+    {"question": "～から", "correct": "จาก..."},
+    {"question": "からい", "correct": "เผ็ด"},
+    {"question": "カラオケ", "correct": "คาราโอเกะ"},
+    {"question": "カラオケ（を）する", "correct": "ร้องคาราโอเกะ"},
+    {"question": "体", "correct": "ร่างกาย"},
+    {"question": "借ります", "correct": "ขอยืม, เช่า"},
+    {"question": "軽い", "correct": "เบา"},
+    {"question": "カレー", "correct": "แกงกะหรี่"},
+    {"question": "カレンダー", "correct": "ปฏิทิน"},
+    {"question": "川", "correct": "แม่น้ำ"}
+        ];
+
+        let currentQuestionIndex;
+        let score;
+        let wrongCount;
+        let questions;
+
+        function startGame() {
+            // Shuffle questions
+            questions = shuffleArray(hiraganaData.slice());
+            currentQuestionIndex = 0;
+            score = 0;
+            wrongCount = 0;
+            updateScore();
+            showQuestion();
+        }
+
+        function showQuestion() {
+            let currentQuestion = questions[currentQuestionIndex];
+            let questionElement = document.getElementById("question");
+            questionElement.innerHTML = currentQuestion.question;
+            
+            // Generate options
+            let options = generateOptions(currentQuestion.correct);
+            let answerElement = document.getElementById("answer");
+            answerElement.innerHTML = '';
+            options.forEach(option => {
+                let button = document.createElement('button');
+                button.textContent = option;
+                button.className = 'answer-btn';
+                button.onclick = () => checkAnswer(option);
+                answerElement.appendChild(button);
+            });
+        }
+
+        function generateOptions(correctAnswer) {
+            let options = [correctAnswer];
+            while (options.length < 4) {
+                let randomData = hiraganaData[Math.floor(Math.random() * hiraganaData.length)];
+                if (!options.includes(randomData.correct)) {
+                    options.push(randomData.correct);
+                }
+            }
+            // Shuffle options
+            return options.sort(() => Math.random() - 0.5);
+        }
+
+        function checkAnswer(selectedAnswer) {
+            let currentQuestion = questions[currentQuestionIndex];
+            if (selectedAnswer == currentQuestion.correct) {
+                score++;
+            } else {
+                wrongCount++;
+            }
+            updateScore();
+            currentQuestionIndex++;
+            if (wrongCount <= 4) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function updateScore() {
+            document.getElementById("score").textContent = "Score: " + score;
+            document.getElementById("wrong").textContent = "Wrong: " + wrongCount;
+}
+
+        function showResult() {
+            document.getElementById("score").textContent = '';
+            document.getElementById("wrong").textContent = '';
+            let questionElement = document.getElementById("question");
+            let answerElement = document.getElementById("answer");
+            let resultElement = document.getElementById("result");
+            questionElement.style.display = 'none';
+            answerElement.style.display = 'none';
+            if (wrongCount === 0) {
+                resultElement.innerHTML = "<h2>Full Score</h2>" + "Score: " + score + " Wrong: " + wrongCount;
+            } else if (wrongCount <= 4) {
+                resultElement.innerHTML = "<h2>Great job</h2>" + "Score: " + score + " Wrong: " + wrongCount;
+            } else {
+                resultElement.innerHTML = "<h2>Game Over</h2>" + "Score: " + score + " Wrong: " + wrongCount;
+            }
+            let backButton = document.createElement('button');
+            backButton.textContent = 'Back to Home';
+            backButton.className = 'result-btn';
+            backButton.onclick = () => window.location.href = 'index.html';
+            resultElement.appendChild(backButton);
+        }
+
+        // Utility function to shuffle an array
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        startGame();
+    </script>
+</body>
+</html>

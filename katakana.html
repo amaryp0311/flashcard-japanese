@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katakana</title>
+    <link rel="stylesheet" href="game.css">
+</head>
+<body>
+    <div id="score-board">
+        <span id="score">Score: 0</span>
+        <span id="wrong">Wrong: 0</span>
+    </div>
+    <div id="question"></div>
+    <div id="answer"></div>
+    <div id="result"></div>
+
+    <script>
+        // Data
+        const hiraganaData = [
+            { question: "ア", correct: "a" },
+            { question: "イ", correct: "i" },
+            { question: "ウ", correct: "u" },
+            { question: "エ", correct: "e" },
+            { question: "オ", correct: "o" },
+            { question: "カ", correct: "ka" },
+            { question: "キ", correct: "ki" },
+            { question: "ク", correct: "ku" },
+            { question: "ケ", correct: "ke" },
+            { question: "コ", correct: "ko" },
+            { question: "サ", correct: "sa" },
+            { question: "シ", correct: "shi" },
+            { question: "ス", correct: "su" },
+            { question: "セ", correct: "se" },
+            { question: "ソ", correct: "so" },
+            { question: "タ", correct: "ta" },
+            { question: "チ", correct: "chi" },
+            { question: "ツ", correct: "tsu" },
+            { question: "テ", correct: "te" },
+            { question: "ト", correct: "to" },
+            { question: "ナ", correct: "na" },
+            { question: "ニ", correct: "ni" },
+            { question: "ヌ", correct: "nu" },
+            { question: "ネ", correct: "ne" },
+            { question: "ノ", correct: "no" },
+            { question: "ハ", correct: "ha" },
+            { question: "ヒ", correct: "hi" },
+            { question: "フ", correct: "fu" },
+            { question: "ヘ", correct: "he" },
+            { question: "ホ", correct: "ho" },
+            { question: "マ", correct: "ma" },
+            { question: "ミ", correct: "mi" },
+            { question: "ム", correct: "mu" },
+            { question: "メ", correct: "me" },
+            { question: "モ", correct: "mo" },
+            { question: "ヤ", correct: "ya" },
+            { question: "ユ", correct: "yu" },
+            { question: "ヨ", correct: "yo" },
+            { question: "ラ", correct: "ra" },
+            { question: "リ", correct: "ri" },
+            { question: "ル", correct: "ru" },
+            { question: "レ", correct: "re" },
+            { question: "ロ", correct: "ro" },
+            { question: "ワ", correct: "wa" },
+            { question: "ヲ", correct: "wo" },
+            { question: "ン", correct: "n" },
+            { question: "ガ", correct: "ga" },
+            { question: "ギ", correct: "gi" },
+            { question: "グ", correct: "gu" },
+            { question: "ゲ", correct: "ge" },
+            { question: "ゴ", correct: "go" },
+            { question: "ザ", correct: "za" },
+            { question: "ジ", correct: "ji" },
+            { question: "ズ", correct: "zu" },
+            { question: "ゼ", correct: "ze" },
+            { question: "ゾ", correct: "zo" },
+            { question: "ダ", correct: "da" },
+            { question: "ヂ", correct: "ji" },
+            { question: "ヅ", correct: "zu" },
+            { question: "デ", correct: "de" },
+            { question: "ド", correct: "do" },
+            { question: "バ", correct: "ba" },
+            { question: "ビ", correct: "bi" },
+            { question: "ブ", correct: "bu" },
+            { question: "ベ", correct: "be" },
+            { question: "ボ", correct: "bo" },
+            { question: "パ", correct: "pa" },
+            { question: "ピ", correct: "pi" },
+            { question: "プ", correct: "pu" },
+            { question: "ペ", correct: "pe" },
+            { question: "ポ", correct: "po" },
+            { question: "キャ", correct: "kya" },
+            { question: "キュ", correct: "kyu" },
+            { question: "キョ", correct: "kyo" },
+            { question: "シャ", correct: "sha" },
+            { question: "シュ", correct: "shu" },
+            { question: "ショ", correct: "sho" },
+            { question: "チャ", correct: "cha" },
+            { question: "チュ", correct: "chu" },
+            { question: "チョ", correct: "cho" },
+            { question: "ニャ", correct: "nya" },
+            { question: "ニュ", correct: "nyu" },
+            { question: "ニョ", correct: "nyo" },
+            { question: "ヒャ", correct: "hya" },
+            { question: "ヒュ", correct: "hyu" },
+            { question: "ヒョ", correct: "hyo" },
+            { question: "ミャ", correct: "mya" },
+            { question: "ミュ", correct: "myu" },
+            { question: "ミョ", correct: "myo" },
+            { question: "リャ", correct: "rya" },
+            { question: "リュ", correct: "ryu" },
+            { question: "リョ", correct: "ryo" },
+            { question: "ギャ", correct: "gya" },
+            { question: "ギュ", correct: "gyu" },
+            { question: "ギョ", correct: "gyo" },
+            { question: "ジャ", correct: "ja" },
+            { question: "ジュ", correct: "ju" },
+            { question: "ジョ", correct: "jo" },
+            { question: "ビャ", correct: "bya" },
+            { question: "ビュ", correct: "byu" },
+            { question: "ビョ", correct: "byo" },
+            { question: "ピャ", correct: "pya" },
+            { question: "ピュ", correct: "pyu" },
+            { question: "ピョ", correct: "pyo" },
+        ];
+
+        let currentQuestionIndex;
+        let score;
+        let wrongCount;
+        let questions;
+
+        function startGame() {
+            // Shuffle questions
+            questions = shuffleArray(hiraganaData.slice());
+            currentQuestionIndex = 0;
+            score = 0;
+            wrongCount = 0;
+            updateScore();
+            showQuestion();
+        }
+
+        function showQuestion() {
+            let currentQuestion = questions[currentQuestionIndex];
+            let questionElement = document.getElementById("question");
+            questionElement.innerHTML = currentQuestion.question;
+            
+            // Generate options
+            let options = generateOptions(currentQuestion.correct);
+            let answerElement = document.getElementById("answer");
+            answerElement.innerHTML = '';
+            options.forEach(option => {
+                let button = document.createElement('button');
+                button.textContent = option;
+                button.className = 'answer-btn';
+                button.onclick = () => checkAnswer(option);
+                answerElement.appendChild(button);
+            });
+        }
+
+        function generateOptions(correctAnswer) {
+            let options = [correctAnswer];
+            while (options.length < 4) {
+                let randomData = hiraganaData[Math.floor(Math.random() * hiraganaData.length)];
+                if (!options.includes(randomData.correct)) {
+                    options.push(randomData.correct);
+                }
+            }
+            // Shuffle options
+            return options.sort(() => Math.random() - 0.5);
+        }
+
+        function checkAnswer(selectedAnswer) {
+            let currentQuestion = questions[currentQuestionIndex];
+            if (selectedAnswer == currentQuestion.correct) {
+                score++;
+            } else {
+                wrongCount++;
+            }
+            updateScore();
+            currentQuestionIndex++;
+            if (wrongCount <= 4) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function updateScore() {
+            document.getElementById("score").textContent = "Score: " + score;
+            document.getElementById("wrong").textContent = "Wrong: " + wrongCount;
+}
+
+        function showResult() {
+            document.getElementById("score").textContent = '';
+            document.getElementById("wrong").textContent = '';
+            let questionElement = document.getElementById("question");
+            let answerElement = document.getElementById("answer");
+            let resultElement = document.getElementById("result");
+            questionElement.style.display = 'none';
+            answerElement.style.display = 'none';
+            if (wrongCount === 0) {
+                resultElement.innerHTML = "<h2>Full Score</h2>" + "Score: " + score + " Wrong: " + wrongCount;
+            } else if (wrongCount <= 4) {
+                resultElement.innerHTML = "<h2>Great job</h2>" + "Score: " + score + " Wrong: " + wrongCount;
+            } else {
+                resultElement.innerHTML = "<h2>Game Over</h2>" + "Score: " + score + " Wrong: " + wrongCount;
+            }
+            let backButton = document.createElement('button');
+            backButton.textContent = 'Back to Home';
+            backButton.className = 'result-btn';
+            backButton.onclick = () => window.location.href = 'index.html';
+            resultElement.appendChild(backButton);
+        }
+
+        // Utility function to shuffle an array
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        startGame();
+    </script>
+</body>
+</html>
